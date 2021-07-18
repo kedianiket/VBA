@@ -1,0 +1,39 @@
+Sub exttoppt()
+Application.ScreenUpdating = False
+Application.DisplayAlerts = False
+Dim PPApp       As PowerPoint.Application, myPresentation As PowerPoint.Presentation, mySlide As PowerPoint.Slide
+Set wb1 = ActiveWorkbook
+Set ws1 = ActiveSheet
+Application.ScreenUpdating = False
+path = ThisWorkbook.path
+MySheet = ActiveSheet.Name
+txtText = "PPT Dashboard_" & Replace(Replace(Now(), "/", "_"), ":", "_")
+DestinationPPT = path & "\" & txtText
+strFileName = path & "\Template.pptx"
+Set PPApp = CreateObject("Powerpoint.Application")
+Set PowerPointApp = GetObject(class:="PowerPoint.Application")
+'Create a New Presentation
+Set myPresentation = PowerPointApp.Presentations.Add
+'Add a slide to the Presentation
+Set mySlide = myPresentation.Slides.Add(1, 11)
+Set rngL0 = L0.Range("B3:L15")
+rngL0.Copy
+'Set mySlide = myPresentation.Slides.Add(2, Layout:=ppLayoutCustom)
+mySlide.Shapes.PasteSpecial DataType:=ppPasteEnhancedMetafile
+'--------- Title
+mySlide.Shapes(1).TextFrame.TextRange.Text = L0.Range("C2")
+Set myShape = mySlide.Shapes(mySlide.Shapes.Count)
+myShape.LockAspectRatio = msoTrue
+myShape.Left = 54
+myShape.Top = 120
+myShape.Height = 385
+myShape.Width = 849
+myShape.LockAspectRatio = msoFalse
+myPresentation.Save
+myPresentation.Close
+ws1.Activate
+Application.CutCopyMode = False
+Application.ScreenUpdating = True
+Application.DisplayAlerts = True
+MsgBox "Done!"
+End Sub
