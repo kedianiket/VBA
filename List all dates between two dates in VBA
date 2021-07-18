@@ -1,0 +1,14 @@
+Sub generateDates()
+'---Clearing the Range
+Worksheets("Sheet1").Range("E2:E10000").Clear
+'---Starting with the start date
+Worksheets("Sheet1").Range("E2") = Worksheets("Sheet1").Range("B1")
+'---Calculating the number of days between the start date and end date
+Days = Int((Worksheets("Sheet1").Range("B2") - Worksheets("Sheet1").Range("B1")))
+'---Generating the dates in cell E2
+i = 2
+Do
+i = i + 1
+Worksheets("Sheet1").Cells(i, 5) = Worksheets("Sheet1").Cells(i - 1, 5) + 1
+Loop While i < 2 + Days
+End Sub
