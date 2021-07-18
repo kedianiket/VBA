@@ -1,0 +1,37 @@
+Sub solverthis()
+Application.ScreenUpdating = False
+Application.Calculation = xlManual
+'-----Defining Variables
+Dim LastRow As Long
+Dim LastCol As Long
+'-----Sheets
+Dim solver_sheet As Worksheet
+'-----Define Sheet names
+Set solver_sheet = Worksheets("Solver")
+'-----Row and column numbers
+LastRow = solver_sheet.Cells(Rows.Count, 2).End(xlUp).Row
+LastCol = solver_sheet.Cells(2, Columns.Count).End(xlToLeft).Column
+
+'-----Solver calculation
+For i = 2 To LastRow
+'-----get the address for variables and objection fuction
+addr_x5 = Replace(Split(solver_sheet.Columns(LastCol - 2).Address, "$")(1), ":", "")
+addr_x1 = Replace(Split(solver_sheet.Columns(LastCol - 6).Address, "$")(1), ":", "")
+addr_x_total = Replace(Split(solver_sheet.Columns(LastCol - 1).Address, "$")(1), ":", "")
+addr_max_total = Replace(Split(solver_sheet.Columns(LastCol).Address, "$")(1), ":", "")
+addr_p_total = Replace(Split(solver_sheet.Columns(LastCol - 7).Address, "$")(1), ":", "")
+'-----Add objective function and add constraints
+solver_sheet.Activate
+SolverReset
+'-----Objective function to maximize
+SolverOk SetCell:=(addr_p_total & i), MaxMinVal:=1, valueOf:=0 _ 
+, ByChange:=Range(addr_x1 & i & ":" & addr_x5 & i), Engine:=1, EngineDesc:="GRG Nonlinear"
+'---Constraint 1
+SolverAdd CellRef:=(addr_x_total & i), Relation:=2, FormulaText:="=100" 
+'---Constraint 2
+SolverAdd CellRef:=(addr_p_total & i), Relation:=1, FormulaText:=(addr_max_total & i) 
+SolverSolve True '-- To solve and disable to output window
+Next i
+Application.Calculation = xlAutomatic
+Application.ScreenUpdating = True
+End Sub
