@@ -1,0 +1,27 @@
+Sub Extraction_Project_Aloravita()
+Dim a1 As String
+Dim a2 As String
+Dim a3 As String
+Dim a4 As String
+'-----Sheets
+Dim Database As Worksheet
+Dim Aloravita As Worksheet
+'-----Define Sheet names
+Set Database = Worksheets("Database")
+Set Aloravita = Worksheets("Aloravita")
+a1 = Aloravita.Cells(2, 12).Value
+a2 = Aloravita.Cells(3, 12).Value
+a3 = Aloravita.Cells(4, 12).Value
+a4 = Aloravita.Cells(5, 12).Value
+Aloravita.Range("A8:O2000").ClearContents
+LastRow = Database.Cells(Rows.Count, 1).End(xlUp).Row
+'---Selecting the database sheet and filtering column 14 for 4(a1,a2,a3,a4) 
+'-criteria and pasting to Aloravita seheet range A7
+With Database
+.AutoFilterMode = False
+With .Range("A1:O" & LastRow)
+.AutoFilter Field:=14, Criteria1:=Array(a1, a2, a3, a4), Operator:=xlFilterValues
+.SpecialCells(xlCellTypeVisible).Copy Destination:=Sheets("Aloravita").Range("A7")
+End With
+End With
+End Sub
