@@ -1,0 +1,45 @@
+Option Explicit
+Sub Split_Data_in_workbooks()
+Application.ScreenUpdating = False
+
+'Data sheet with the data 
+Dim data_sh As Worksheet
+Set data_sh = ThisWorkbook.Sheets("DataSheet")
+
+'User click sheet
+Dim setting_Sh As Worksheet
+Set setting_Sh = ThisWorkbook.Sheets("UserClick")
+
+'Defining new workbooks
+Dim nwb As Workbook
+Dim nsh As Worksheet
+
+'Get unique Region to create workbooks
+setting_Sh.Range("A:A").Clear
+data_sh.AutoFilterMode = False
+data_sh.Range("B:B").Copy setting_Sh.Range("A1")
+setting_Sh.Range("A:B").RemoveDuplicates Columns:=Array(1, 2), Header:=xlYes
+
+'Selecting Regions and filtering and copy to New sheet
+Dim i As Integer
+For i = 2 To Application.CountA(setting_Sh.Range("A:A"))
+data_sh.UsedRange.AutoFilter 2, setting_Sh.Range("A" & i).Value
+
+Set nwb = Workbooks.Add Set nsh = nwb.Sheets(1) 
+
+data_sh.UsedRange.SpecialCells(xlCellTypeVisible).Copy nsh.Range("A1") 
+
+nsh.UsedRange.EntireColumn.ColumnWidth = 15 
+
+'Here user has to input the location
+nwb.SaveAs setting_Sh.Range("H6").Value & "/" & setting_Sh.Range("A" & i).Value & ".xlsx" 
+
+nwb.Close False 
+
+data_sh.AutoFilterMode = False
+
+Next i
+
+setting_Sh.Range("A:B").Clear
+MsgBox "Done"
+End Sub
