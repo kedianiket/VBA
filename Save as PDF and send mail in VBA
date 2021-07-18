@@ -1,0 +1,55 @@
+Sub ExportAsPDF()
+'----- Define Sheet names
+Set PrintTab = Worksheets("PrintTab1")
+Set EmpSheet = Worksheets("EmployeeMap")
+'----- Defining Variables
+Dim LastRow As Long
+Dim FolderPath As String
+'----- Getting Last Row for drop down 
+LastRow = EmpSheet.Cells(Rows.Count, 5).End(xlUp).Row
+'----- Converting to Pdf
+For i = 8 To LastRow
+'----- File Path location
+FolderPath = "C:\Users\Desktop"
+'----- Iterating through drop down
+PrintTab.Range("B8").Value = EmpSheet.Range("E" & i)
+'----- Generate and Save the pdf in that folder location 
+Sheets(Array("PrintTab1", "PrintTab2")).Select
+ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=FolderPath & "\" & EmpSheet.Range("E" & i), _
+openafterpublish:=False, ignoreprintareas:=False
+'----- Sending Email 
+Call Mail_Send(FolderPath & "\" & EmpSheet.Range("E" & i) & ".pdf", "", PrintTab.Range("E10"), "", "Report")
+MsgBox "All PDF's have been successfully exported."
+Next i
+End Sub
+'-- Email code
+Sub Mail_Send(strAttach As String, strFromMail As String, strToMail As String, strCC As String, strSub As String)
+Dim OutApp As Object
+Dim OutMail As Object
+Dim doc As Variant
+Dim wdRange As Variant
+Set OutApp = CreateObject("Outlook.Application")
+Set OutMail = OutApp.CreateItem(0)
+With OutMail
+.Display
+If strFromMail <> "" Then
+.SentOnBehalfOfName = strFromMail
+End If
+.To = strToMail
+If strCC <> "" Then
+.cc = strCC
+End If
+.Subject = strSub
+If strAttach <> "" Then
+.attachments.Add strAttach
+End If
+End With
+With OutMail
+'.Send
+.Display
+'.Save
+End With
+On Error GoTo 0
+Set OutMail = Nothing
+Set OutApp = Nothing
+End Sub
