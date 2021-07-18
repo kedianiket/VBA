@@ -1,0 +1,11 @@
+Sub SaveAsPDF()
+
+Dim ws As Worksheet
+
+For Each ws In Worksheets
+
+ws.ExportAsFixedFormat xlTypePDF, "C:\Users\kedia niket\Documents\Case\" & ws.Name & ".pdf"
+
+Next ws
+
+End Sub
