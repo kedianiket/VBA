@@ -1,0 +1,15 @@
+Sub merge()
+Application.DisplayAlerts = False
+Application.ScreenUpdating = False
+'------Select Range
+Set myRange = Range("B2:L2")
+'------Merge
+CheckAgain:
+For Each i In myRange
+If i.Value = i.Offset(0, 1).Value And Not IsEmpty(i) Then
+Range(i, i.Offset(0, 1)).merge
+i.HorizontalAlignment = xlCenter
+GoTo CheckAgain
+End If
+Next
+End Sub
