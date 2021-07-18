@@ -1,0 +1,23 @@
+Sub border()
+
+    Worksheets("Sheet1").Range("B2:E11").Borders(xlEdgeTop).LineStyle = xlContinuous
+    Worksheets("Sheet1").Range("B2:E11").Borders(xlEdgeBottom).LineStyle = xlContinuous
+    Worksheets("Sheet1").Range("B2:E11").Borders(xlEdgeLeft).LineStyle = xlContinuous
+    Worksheets("Sheet1").Range("B2:E11").Borders(xlEdgeRight).LineStyle = xlContinuous
+    Worksheets("Sheet1").Range("B2:E11").Borders(xlInsideVertical).LineStyle = xlContinuous
+    Worksheets("Sheet1").Range("B2:E11").Borders(xlInsideHorizontal).LineStyle = xlContinuous
+
+'------Outside borders
+Worksheets("Sheet1").Range("K2:M11").BorderAround LineStyle:=xlContinuous
+
+End Sub
+
+
+'---- available Line styles 
+
+' Continuous -   xlContinuous
+' Dot -          xlDot
+' DashDotDot -   xlDashDotDot
+' Dash -         xlDash
+' SlantDashDot - xlSlantDashDot
+' Double -       xlDouble
