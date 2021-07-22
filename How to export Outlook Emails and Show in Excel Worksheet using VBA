@@ -1,1 +1,55 @@
-How to export Outlook Emails and Show in Excel Worksheet using VBA
+'-----------Before running the code, go to tools > references > Microsoft Outlook 16.0 object library
+
+Sub GetFromOutlook()
+    
+    Dim OutlookApp  As Outlook.Application
+    Dim OutlookNamespace As Namespace
+    Dim Folder      As MAPIFolder
+    Dim OutlookMail As Variant
+    Dim i           As Integer
+    
+    Set OutlookApp = New Outlook.Application
+    Set OutlookNamespace = OutlookApp.GetNamespace("MAPI")
+    
+    'For entire mailbox
+    Set Folder = OutlookNamespace.GetDefaultFolder(olFolderInbox)
+    
+    'For specific folder
+    'Set Folder = OutlookNamespace.GetDefaultFolder(olFolderInbox).Folders("Sales")
+    
+    i = 4
+    
+    For Each OutlookMail In Folder.Items
+        
+        'Subject
+        Cells(i, 1) = OutlookMail.Subject
+        
+        'Received Date
+        Cells(i, 2) = OutlookMail.ReceivedTime
+        
+        'Sender Name
+        Cells(i, 3) = OutlookMail.SenderName
+        
+        'Body
+        Cells(i, 4) = OutlookMail.Body
+        
+        'Importance
+        Cells(i, 5) = OutlookMail.Importance
+        
+        'cc
+        Cells(i, 6) = OutlookMail.CC
+        
+        'bcc
+        Cells(i, 7) = OutlookMail.BCC
+                
+        
+        
+        i = i + 1
+        
+    Next OutlookMail
+    
+    Set Folder = Nothing
+    Set OutlookNamespace = Nothing
+    Set OutlookApp = Nothing
+    
+End Sub
