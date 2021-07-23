@@ -52,4 +52,4 @@ Sub GetFromOutlook()
     Set OutlookNamespace = Nothing
     Set OutlookApp = Nothing
     
-End Sub
+End Sub 
