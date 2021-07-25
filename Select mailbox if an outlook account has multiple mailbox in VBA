@@ -1,0 +1,84 @@
+Sub GetFromOutlook()
+
+    Dim OutlookApp  As Outlook.Application
+    Dim OutlookNamespace As Namespace
+    Dim Folder      As MAPIFolder
+    Dim OutlookMail As Variant
+    Dim i           As Integer
+    Set OutlookApp = New Outlook.Application
+    Set OutlookNamespace = OutlookApp.GetNamespace("MAPI")
+    Dim st As Outlook.Store
+    
+    Dim FolderVal As String
+    
+     FolderVal = Range("G2").Value
+     MailBoxVal = Range("B2").Value
+
+  
+    
+   
+   '-----------------------------
+    
+    
+    
+    'For specific folder
+   ' Set Folder = OutlookNamespace.GetDefaultFolder(olFolderInbox).Folders(FolderVal)
+    
+    Set Folder = OutlookNamespace.Folders(MailBoxVal).Folders(FolderVal)
+    
+    i = 6
+    For Each OutlookMail In Folder.Items
+        
+        If OutlookMail.ReceivedTime >= Range("L2").Value And OutlookMail.ReceivedTime <= Range("L3").Value + 1 Then
+            
+            'From Name
+            Cells(i, 1) = OutlookMail.SenderName
+            
+            'Receiver
+            Cells(i, 2) = Range("B2").Value
+            
+            'Subject
+            Cells(i, 3) = OutlookMail.Subject
+            
+            'Importance
+            
+            If OutlookMail.Importance = 0 Then
+                Cells(i, 4) = "Low"
+                
+            ElseIf OutlookMail.Importance = 1 Then
+                Cells(i, 4) = "Normal"
+                
+            ElseIf OutlookMail.Importance = 2 Then
+                Cells(i, 4) = "High"
+                
+            End If
+            
+            'Received Date
+            Cells(i, 5) = OutlookMail.ReceivedTime
+            
+            'Received Hour
+            Cells(i, 6) = Hour(Cells(i, 5))
+            
+            'Body
+            Cells(i, 7) = OutlookMail.Body
+            
+            'Attachement
+            'Cells(i, 8) = OutlookMail.Attachments.Count
+            
+            i = i + 1
+            
+        End If
+        
+    Next OutlookMail
+   '--------------------------
+   
+   
+    
+    Set Folder = Nothing
+    Set OutlookNamespace = Nothing
+    Set OutlookApp = Nothing
+    
+End Sub
+
+
+
