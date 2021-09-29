@@ -1,0 +1,89 @@
+Sub Trigger_Email()
+    Dim rng As Range
+    Dim OutApp As Object
+    Dim OutMail As Object
+    Dim StrBody As String
+    'StrBody = "Test," & "<br>" & "<br>" & _
+        "Test" & "<br><br>"
+    Set rng = Nothing
+    On Error Resume Next
+    'Only the visible cells in the selection
+    'Set rng = Selection.SpecialCells(xlCellTypeVisible)
+    'You can also use a fixed range if you want
+    Set rng = ThisWorkbook.Worksheets("Email Master").Range("A8:E18").SpecialCells(xlCellTypeVisible)
+    On Error GoTo 0
+    If rng Is Nothing Then
+        MsgBox "The selection is not a range or the sheet is protected" & _
+               vbNewLine & "please correct and try again.", vbOKOnly
+        Exit Sub
+    End If
+    With Application
+        .EnableEvents = False
+        .ScreenUpdating = False
+    End With
+    Set OutApp = CreateObject("Outlook.Application")
+    Set OutMail = OutApp.CreateItem(0)
+    On Error Resume Next
+    With OutMail
+        .To = "abc@gmail.com"
+        .CC = "abc@gmail.com"
+        .BCC = ""
+        .Subject = "RRF for Vendor Sourcing"
+        .HTMLBody = rangetoHTML(rng)
+        '.Attachments.Add ActiveWorkbook.FullName
+        .Display   'or use .Display
+    End With
+    On Error GoTo 0
+    With Application
+        .EnableEvents = True
+        .ScreenUpdating = True
+    End With
+    Set OutMail = Nothing
+    Set OutApp = Nothing
+End Sub
+Function rangetoHTML(rng As Range)
+' Changed by Ron de Bruin 28-Oct-2006
+' Working in Office 2000-2013
+    Dim fso As Object
+    Dim ts As Object
+    Dim TempFile As String
+    Dim TempWB As Workbook
+    TempFile = Environ$("temp") & "\" & Format(Now, "dd-mm-yy h-mm-ss") & ".htm"
+    'Copy the range and create a new workbook to past the data in
+    rng.Copy
+    Set TempWB = Workbooks.Add(1)
+    With TempWB.Sheets(1)
+        .Cells(1).PasteSpecial Paste:=8
+        .Cells(1).PasteSpecial xlPasteValues, , False, False
+        .Cells(1).PasteSpecial xlPasteFormats, , False, False
+        .Cells(1).Select
+        Application.CutCopyMode = False
+        On Error Resume Next
+        .DrawingObjects.Visible = True
+        .DrawingObjects.Delete
+        On Error GoTo 0
+    End With
+    'Publish the sheet to a htm file
+    With TempWB.PublishObjects.Add( _
+         SourceType:=xlSourceRange, _
+         Filename:=TempFile, _
+         Sheet:=TempWB.Sheets(1).Name, _
+         Source:=TempWB.Sheets(1).UsedRange.Address, _
+         HtmlType:=xlHtmlStatic)
+        .Publish (True)
+    End With
+    'Read all data from the htm file into RangetoHTML
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set ts = fso.GetFile(TempFile).OpenAsTextStream(1, -2)
+    rangetoHTML = ts.readall
+    ts.Close
+    rangetoHTML = Replace(rangetoHTML, "align=center x:publishsource=", _
+                          "align=left x:publishsource=")
+    'Close TempWB
+    TempWB.Close savechanges:=False
+    'Delete the htm file we used in this function
+    Kill TempFile
+    Set ts = Nothing
+    Set fso = Nothing
+    Set TempWB = Nothing
+End Function
