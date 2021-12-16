@@ -1,0 +1,31 @@
+Sub WorksheetLoop()
+
+         Dim WS_Count As Integer
+         Dim I As Integer
+
+         ' Set WS_Count equal to the number of worksheets in the active
+         ' workbook.
+         WS_Count = ActiveWorkbook.Worksheets.Count
+
+         ' Begin the loop.
+         For I = 2 To WS_Count
+
+            ' Insert your code here.
+            ' The following line shows how to reference a sheet within
+            ' the loop by displaying the worksheet name in a dialog box.
+            
+            LastRow = Worksheets(I).Cells(Rows.Count, 1).End(xlUp).Row
+            
+            Worksheets(I).Range("B2").Formula = "=IFERROR(VLOOKUP(A2,Grades!$B$2:$E$75,4,FALSE),IFERROR(VLOOKUP(A2,Grades!$C$2:$E$75,3,FALSE),VLOOKUP(A2,Grades!$D$2:$E$75,2,FALSE)))"
+    
+    Worksheets(I).Range("B2").Copy Destination:=Worksheets(I).Range("B2:B" & LastRow)
+            
+            
+            
+   '         MsgBox LastRow
+
+
+
+         Next I
+
+      End Sub
