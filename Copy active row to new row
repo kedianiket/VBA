@@ -1,0 +1,17 @@
+Sub CopyActiveRowToNext()
+    Dim ws As Worksheet
+    Dim activeRow As Long
+
+    ' Set the worksheet to the active sheet
+    Set ws = ActiveSheet
+    
+    ' Get the active row number
+    activeRow = ActiveCell.Row
+    
+    ' Copy the active row to the next row
+    ws.Rows(activeRow).Copy Destination:=ws.Rows(activeRow + 1)
+    
+    ' Optional: Select the newly copied row
+    ws.Rows(activeRow + 1).Select
+End Sub
+
